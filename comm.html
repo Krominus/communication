@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Ma page Web</title>
+	<style>
+
+        #square {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        border-radius: 50px;
+        background-color: #9b4caf;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        #click-count {
+        font-size: 24px;
+        color: white;
+        text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        #timer {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 24px;
+        color: #555;
+        text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        #timer::before {
+        content: "";
+        display: inline-block;
+        margin-right: 5px;
+        width: 30px;
+        height: 30px;
+        background-image: url('https://cdn.icon-icons.com/icons2/2467/PNG/512/clock_icon_149035.png');
+        background-size: cover;
+        }
+
+        #timer.milliseconds::after {
+        content: "";
+        display: inline-block;
+        margin-left: 5px;
+        width: 50px;
+        font-size: 16px;
+        vertical-align: middle;
+        }
+
+		.center {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		}
+
+		#reset-button {
+			position: absolute;
+			top: 20px;
+			left: 20px;
+			background-color: #f44336;
+			color: white;
+			border: none;
+			padding: 12px 24px;
+			border-radius: 4px;
+			font-size: 16px;
+			cursor: pointer;
+			box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+			}
+
+			#reset-button:hover {
+			background-color: #d32f2f;
+			}
+
+			#reset-button:focus {
+			outline: none;
+			box-shadow: 0px 0px 0px 3px rgba(255, 255, 255, 0.5);
+			}
+	</style>
+</head>
+<body>
+
+		<button id="reset-button">Reset</button>
+		<div id="timer">Time: 0</div>
+		<div id="square">
+		<div id="click-count">0</div>
+		</div>
+
+	<script>
+		const square = document.getElementById('square');
+        const resetButton = document.getElementById('reset-button');
+        const timer = document.getElementById('timer');
+        const clickCount = document.getElementById('click-count');
+        let squareCount = 0;
+        let timerInterval;
+        let initialPosition;
+
+        function moveSquare() {
+        const squareSize = square.offsetWidth;
+        const windowHeight = window.innerHeight;
+        const windowWidth = window.innerWidth;
+        const maxHorizontal = windowWidth - squareSize;
+        const maxVertical = windowHeight - squareSize;
+        const randomHorizontal = Math.floor(Math.random() * maxHorizontal);
+        const randomVertical = Math.floor(Math.random() * maxVertical);
+        square.style.top = `${randomVertical}px`;
+        square.style.left = `${randomHorizontal}px`;
+        }
+
+        function startTimer() {
+        let time = 0;
+        timerInterval = setInterval(() => {
+            time += 1;
+            timer.textContent = `Time: ${time}`;
+        }, 1000);
+        }
+
+        function resetGame() {
+        clearInterval(timerInterval);
+        squareCount = 0;
+        timer.textContent = 'Time: 0';
+        clickCount.textContent = '0';
+        square.style.top = `${initialPosition.y}px`;
+        square.style.left = `${initialPosition.x}px`;
+        }
+
+        // Attendre que le carré soit chargé pour stocker la position initiale
+        window.addEventListener('load', () => {
+        const squareSize = square.offsetWidth;
+        const windowHeight = window.innerHeight;
+        const windowWidth = window.innerWidth;
+        const initialHorizontal = Math.floor(windowWidth / 2 - squareSize / 2);
+        const initialVertical = Math.floor(windowHeight / 2 - squareSize / 2);
+        initialPosition = { x: initialHorizontal, y: initialVertical };
+        square.style.top = `${initialVertical}px`;
+        square.style.left = `${initialHorizontal}px`;
+        });
+
+        square.addEventListener('click', () => {
+        if (squareCount === 0) {
+            startTimer();
+        }
+        squareCount += 1;
+        clickCount.textContent = squareCount;
+        if (squareCount === 20) {
+            clearInterval(timerInterval);
+            alert('You won!');
+        }
+        moveSquare();
+        });
+
+        resetButton.addEventListener('click', () => {
+        resetGame();
+        });
+
+	</script>
+</body>
+</html>
